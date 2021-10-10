@@ -22,6 +22,10 @@ public class PowerUp implements Poolable {
     private boolean active;
     private Type type;
     private int power;
+    private Vector2 tmpVec;
+
+
+    private final float DST_TO_TAKE = 50.0f;
 
     public Type getType() {
         return type;
@@ -57,6 +61,7 @@ public class PowerUp implements Poolable {
         this.position = new Vector2(0, 0);
         this.velocity = new Vector2(0, 0);
         this.active = false;
+        this.tmpVec = new Vector2(0.0f, 0.0f);
     }
 
     public void activate(Type type, float x, float y, int power) {
@@ -72,8 +77,13 @@ public class PowerUp implements Poolable {
     public void update(float dt) {
         position.mulAdd(velocity, dt);
         time += dt;
-        if (time >= 7.0f) {
+        if (time >= 10.0f) {
             deactivate();
+        }
+        float dst = position.dst(gc.getHero().getPosition());
+        if (dst < DST_TO_TAKE) {
+            tmpVec.set(gc.getHero().getPosition()).sub(position).nor();
+            velocity.mulAdd(tmpVec, 10.0f);
         }
     }
 }
